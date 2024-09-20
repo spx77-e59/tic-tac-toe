@@ -1,12 +1,14 @@
-// A single box in a gameboard
+// A single cell in a gameboard
 const Cell = function () {
   let innerValue = "";
+  let cellNumber = 0;
   const setValue = function (value) {
     innerValue = value;
   };
   const getValue = function () {
     return innerValue;
   };
+
   return { setValue, getValue };
 };
 
@@ -29,7 +31,11 @@ const Gameboard = function () {
 
   const markCell = function (playerValue, rowNo, columnNo) {
     chosenCell = gameboard[rowNo][columnNo];
-    chosenCell.getValue() === "" ? chosenCell.setValue(playerValue) : "";
+    if(chosenCell.getValue() === ""){
+      chosenCell.setValue(playerValue);
+      return true;
+    }
+    return false;
   };
 
   return { getGameBoard, markCell };
@@ -39,7 +45,7 @@ const Gameboard = function () {
 const Player = function (value) {
   const playerName = "";
   const playerValue = value;
-  const playerScore = 0;
+  let playerScore = 0;
 
   const setName = function (name) {
     playerName = name;
@@ -70,7 +76,11 @@ const GameController = function () {
   const player2 = Player("O");
   let activePlayer = player1;
 
-  const board = Gameboard();
+  const gameBoard = Gameboard();
+
+  const getBoard = function () {
+    return gameBoard.getGameBoard();
+  };
 
   const switchPlayer = function () {
     activePlayer = player1 === activePlayer ? player2 : player1;
@@ -123,42 +133,71 @@ const GameController = function () {
         [2, 0],
       ],
     ];
+
     const value = activePlayerValue;
-    let hasWon = false;
-    winPatterns.forEach((pattern) => {
-      if (hasWon) {
-        return;
-      }
-      let i = 0;
-      pattern.forEach((cell) => {
-        if (board[cell[0]][cell[1]] === value) {
-          i++;
-        }
-        if (i === 3) {
-          hasWon = true;
-        }
-      });
-    });
+    const board = getBoard();
+
+    const hasWon = winPatterns.some((pattern) =>
+      pattern.every(([row, col]) => board[row][col].getValue() === value)
+    );
+
     if (hasWon) {
-      return getActivePlayer().increaseScore();
+      getActivePlayer().increaseScore();
+      return 1;
     }
-    switchPlayer();
+
+    const cellFilled = board
+      .flat()
+      .filter((cell) => cell.getValue() !== "").length;
+
+    if (cellFilled === 9) {
+      return 0;
+    }
+    return -1;
+  };
+
+  const isGameOver = function () {
+    const activePlayer = getActivePlayer();
+    const playerValue = activePlayer.getValue();
+    const result = findWinner(playerValue);
+
+    if (result === 1) {
+      console.log(playerValue, "has won!");
+      return true;
+    }
+    if (result === 0) {
+      console.log("It's a draw!");
+      return true;
+    }
+    return false;
   };
 
   const playRound = function (rowNo, columnNo) {
-    //
-    console.log(getActivePlayer(), getActivePlayer().getValue());
-    //
-    board.markCell(getActivePlayer().getValue(), rowNo, columnNo);
-    switchPlayer();
-    // findWinner(getActivePlayer().getValue());
+    if (isGameOver()) {
+      return;
+    }
+
+    const activePlayer = getActivePlayer();
+    const playerValue = activePlayer.getValue();
+
+    isMarked = gameBoard.markCell(playerValue, rowNo, columnNo);
+
+    const result = findWinner(playerValue);
+
+    if (result === 1) {
+      console.log(playerValue, "has won!");
+      return;
+    } else if (result === 0) {
+      console.log("It's a draw!");
+      return;
+    } else {
+      if(isMarked){
+        switchPlayer();
+      }
+    }
   };
 
-  const getBoard = function () {
-    return board.getGameBoard();
-  };
-
-  return { getActivePlayer, playRound, getBoard };
+  return { getActivePlayer, playRound, getBoard, isGameOver};
 };
 
 const ScreenController = function () {
@@ -169,6 +208,7 @@ const ScreenController = function () {
 
   const game = GameController();
   const board = game.getBoard();
+
   const updateScreen = function () {
     gameBoardDiv.textContent = "";
     for (let i = 0; i < 3; i++) {
@@ -180,7 +220,6 @@ const ScreenController = function () {
         cellElement.dataset.row = i;
         cellElement.dataset.column = j;
         cellElement.textContent = board[i][j].getValue();
-        console.log(i, j, board[i][j].getValue());
         rowElement.appendChild(cellElement);
       }
       gameBoardDiv.appendChild(rowElement);
@@ -192,7 +231,6 @@ const ScreenController = function () {
   const clickGameBoardDivHandler = function (e) {
     const selectedRow = e.target.dataset.row;
     const selectedColumn = e.target.dataset.column;
-    // const selectedCell = board[selectedRow][selectedColumn];
     game.playRound(selectedRow, selectedColumn);
     updateScreen();
   };
