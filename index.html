@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tic Tac Toe</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1 class="game-title">Tic Tac Toe</h1>
-  <div class="game-board-div" style="display: none;">
-  </div>
-  <div class="info">
-    <p class="active-player-info-text"></p>
-    <h2 class="winner-info-text"></h2>
-  </div>
-  <div class="form">
-    <input type="text" name="player1" id="player1" placeholder="Player 1 Name">
-    <input type="text" name="Player2" id="Player2" placeholder="Player 2 Name">
-  </div>
-  <div class="controls">
-    <button class="start-btn">Start</button>
-    <button class="reset-btn" style="display: none;">Reset</button>
-  </div>
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav>
+      <h1 class="game-title">Tic Tac Toe</h1>
+    </nav>
+    <div class="game-board-div" style="display: none"></div>
+    <div class="info">
+      <p class="active-player-info-text"></p>
+      <h2 class="winner-info-text"></h2>
+    </div>
+    <form class="form">
+      <input
+        type="text"
+        name="player1"
+        id="player1"
+        placeholder="Player 1 Name"
+      />
+      <input
+        type="text"
+        name="Player2"
+        id="Player2"
+        placeholder="Player 2 Name"
+      />
+    </form>
+    <div class="controls">
+      <button class="start-btn">Start Game</button>
+      <button class="reset-btn" style="display: none">Reset</button>
+    </div>
+    <script src="script.js"></script>
+  </body>
 </html>
