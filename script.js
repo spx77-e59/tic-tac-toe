@@ -1,4 +1,3 @@
-// A single cell in a gameboard
 const Cell = function () {
   let innerValue = "";
   let cellNumber = 0;
@@ -12,7 +11,6 @@ const Cell = function () {
   return { setValue, getValue };
 };
 
-//The gameboard
 const Gameboard = function () {
   const row = 3;
   const column = 3;
@@ -41,7 +39,6 @@ const Gameboard = function () {
   return { getGameBoard, markCell };
 };
 
-// A single player
 const Player = function (value) {
   let playerName = "";
   const playerValue = value;
@@ -67,10 +64,13 @@ const Player = function (value) {
     playerScore++;
   };
 
-  return { setName, getName, getValue, getScore, increaseScore };
+  const resetScore = function () {
+    playerScore = 0;
+  };
+
+  return { setName, getName, getValue, getScore, increaseScore, resetScore };
 };
 
-// Game controller
 const GameController = function () {
   const player1 = Player("X");
   const player2 = Player("O");
@@ -229,16 +229,16 @@ const ScreenController = function () {
   const formElement = document.querySelector(".form");
   const warnText = document.querySelector(".warn-text");
   const gameBoardDiv = document.querySelector(".game-board-div");
-  const resetButton = document.querySelector(".reset-btn");
   const activePlayerText = document.querySelector(".active-player-info-text");
-  const p1scoreBoardText= document.querySelector(".p1-score-board-text");
-  const p2scoreBoardText= document.querySelector(".p2-score-board-text");
+  const scoreDiv = document.querySelector(".score-board-div");
+  const p1scoreBoardText = document.querySelector(".p1-score-board-text");
+  const p2scoreBoardText = document.querySelector(".p2-score-board-text");
   const winnerText = document.querySelector(".winner-info-text");
 
-  const game = GameController();
+  let game = GameController();
   let board = game.getBoard();
-  const player1 = game.getPlayers().player1;
-  const player2 = game.getPlayers().player2;
+  let player1 = game.getPlayers().player1;
+  let player2 = game.getPlayers().player2;
 
   const updateScreen = function () {
     if (game.isGameOver()) {
@@ -253,7 +253,7 @@ const ScreenController = function () {
         winnerText.textContent = `${winningPlayer.getName()} won!`;
         setTimeout(() => {
           winnerText.textContent = "";
-        }, 2000);
+        }, 1000);
       }
       game.resetBoard();
     }
@@ -310,7 +310,9 @@ const ScreenController = function () {
     startButton.style.display = "none";
     formElement.style.display = "none";
     gameBoardDiv.style.display = "";
-    resetButton.style.display = "";
+    activePlayerText.style.display = "";
+    winnerText.style.display = "";
+    scoreDiv.style.display = "";
 
     gameBoardDiv.addEventListener("click", (e) => {
       clickGameBoardDivHandler(e);
