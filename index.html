@@ -10,12 +10,17 @@
     <nav>
       <h1 class="game-title">Tic Tac Toe</h1>
     </nav>
-    <div class="game-board-div" style="display: none"></div>
-    <div class="info">
-      <p class="active-player-info-text"></p>
-      <h2 class="winner-info-text"></h2>
+    <div class="score-board-div">
+      <h2 class="p1-score-board-text"></h2>
+      <h2 class="p2-score-board-text"></h2>
     </div>
+    
+    <div class="game-board-div" style="display: none"></div>
+    <p class="active-player-info-text"></p>
+    <h2 class="winner-info-text"></h2>
+
     <form class="form">
+      <p class="warn-text"></p>
       <input
         type="text"
         name="player1"
@@ -24,7 +29,7 @@
       />
       <input
         type="text"
-        name="Player2"
+        name="player2"
         id="Player2"
         placeholder="Player 2 Name"
       />
